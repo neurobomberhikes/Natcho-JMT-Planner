@@ -1,4 +1,4 @@
-const CACHE = 'jmt-v13';
+const CACHE = 'jmt-v14';
 const ASSETS = ['./', './index.html', './icon-180.png', './icon-512.png', './manifest.json'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
