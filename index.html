@@ -137,10 +137,10 @@ svg text{font-family:var(--mono)}
     <div id="planList"></div>
   </section>
   <section id="tab-setup" hidden>
-    <p class="hint">Note: the JMT requires a wilderness permit (Yosemite lottery for classic starts); Half Dome needs its own permit. Miles run 0 at Happy Isles to 210.4 at the Whitney summit, then descend to Whitney Portal at 237.9. Choose where and when your hike starts and ends. Mile markers are planning approximations (FarOut/Halfmile revisions shift them a little) — verify in your nav app.</p>
+    <p class="hint">Note: the JMT requires a wilderness permit (Yosemite lottery for classic starts); Half Dome needs its own permit. Miles run 0 at Happy Isles to the Whitney summit, then descend to Whitney Portal. Choose where and when your hike starts and ends. Mile markers are planning approximations — verify in your nav app.</p>
     <div class="card">
       <div class="setrow"><label>Direction</label>
-        <div class="seg2"><button id="dirNOBO" data-dir="NOBO">Happy Isles → Whitney</button><button id="dirSOBO" data-dir="SOBO">Whitney → Happy Isles</button></div>
+        <div class="seg2"><button id="dirNOBO" data-dir="NOBO">NOBO</button><button id="dirSOBO" data-dir="SOBO">SOBO</button></div>
       </div>
       <div class="setrow"><label>Start</label><select id="startSel"></select></div>
       <div class="setrow"><label>End</label><select id="endSel"></select></div>
@@ -152,7 +152,7 @@ svg text{font-family:var(--mono)}
       <div class="setrow"><label>Side quests</label>
         <div class="seg2"><button id="qOn">On</button><button id="qOff">Off</button></div>
       </div>
-      <div class="sub" style="margin:-4px 0 8px 102px">Bonus-mile detours (Mt. Whitney, custom peaks/hot springs) — extra days and gain are injected where each quest anchors.</div>
+      <div class="sub" style="margin:-4px 0 8px 102px">Bonus-mile detours (side peaks, hot springs, resupply spurs) — extra days and gain are injected where each quest anchors.</div>
       <div class="setrow"><label>Log entry</label>
         <div class="seg2"><button id="logMi">Miles / day</button><button id="logPct">JMT mile</button></div>
       </div>
@@ -193,16 +193,13 @@ svg text{font-family:var(--mono)}
       <div class="sub" id="setupSummary" style="margin-top:4px"></div>
     </div>
     <div id="rcEditor" style="display:none">
-      <div class="sub" style="margin:2px 4px 8px"><b>Route changes</b> — trailhead to trailhead, applied in trip order; direction persists until the next change. Travel day inserts a zero-mile day at the jump. Presets below build a typical pattern you can then adjust. The Cottonwood presets include the Whitney summit (delete the first change to skip it).</div>
+      <div class="sub" style="margin:2px 4px 8px"><b>Route changes</b> — trailhead to trailhead, applied in trip order; direction persists until the next change. Travel day inserts a zero-mile day at the jump. Presets below build a typical pattern you can then adjust.</div>
       <div style="display:flex;gap:8px;margin-bottom:10px">
         <button class="reset" id="pJump" style="margin:0;flex:1;padding:9px 4px">Jump / skip</button>
         <button class="reset" id="pFlip" style="margin:0;flex:1;padding:9px 4px">Flip-flop</button>
         <button class="reset" id="pYoyo" style="margin:0;flex:1;padding:9px 4px">Yo-yo</button>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:10px">
-        <button class="reset" id="pCwExit" style="margin:0;flex:1;padding:9px 4px">Exit via Cottonwood</button>
-        <button class="reset" id="pCwStart" style="margin:0;flex:1;padding:9px 4px">Start via Cottonwood</button>
-      </div>
+      <div id="trailPresets" style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap"></div>
       <div id="rcList"></div>
       <button class="reset" id="rcAdd">Add route change</button>
     </div>
@@ -278,8 +275,9 @@ svg text{font-family:var(--mono)}
 <footer>Mileages are planning estimates — verify routing and water in FarOut / Gaia / CalTopo. Entries save on this device automatically and the app works offline after its first online load. © 2026 Neurobomber. All rights reserved. · Personal, noncommercial use only. · <a href="https://buymeacoffee.com/Neurobomberhikes" target="_blank" rel="noopener" style="color:#8a651f">☕ Buy me a coffee</a></footer>
 
 <script>
+
 // ============ Neurobomber's Natcho v2 — © 2026 Neurobomber. All rights reserved. ============
-const APP_VERSION="1.2.3";
+const APP_VERSION="5.0.1-jmt.1";
 const COFFEE_URL="https://buymeacoffee.com/Neurobomberhikes";
 const CANONICAL_PIN=""; // optional: set your permanent URL here when rebranding to pin share/QR/version-check
 function canonical(){
@@ -312,7 +310,26 @@ const TRAIL={
   keyPoints:[ [204.4,"Guitar Lake — classic summit-eve camp & water"], [106.5,"Muir Trail Ranch"] ],
   // Nearest resupply for the *start* (used on Day 0 / Day 1 staging).
   startResupply:{ NOBO:"Yosemite Village", SOBO:"Lone Pine" }
+  ,length:237.9, classicEnd:219.2, dirIncreasing:"SOBO",
+  abbr:"JMT", shareName:"Neurobomber’s Natcho JMT Planner",
+  halfwayMile:104.4, highMile:208.7, highName:"WHITNEY — HIGH POINT",
+  centuryStep:50, centuryMin:50, centuryMax:200, terminusHiEnd:false,
+  seam:{mainEnd:219.2, attach:200.5}
+  ,presets:[
+    {id:"cwExit", label:"Exit via Cottonwood", dir:"NOBO", start:0, end:237.9,
+     routeChanges:[{at:208.7,to:208.7,dir:"SOBO",travel:false},{at:200.5,to:219.3,dir:"NOBO",travel:false}]},
+    {id:"cwStart", label:"Start via Cottonwood", dir:"SOBO", start:237.9, end:0,
+     routeChanges:[{at:219.3,to:200.5,dir:"NOBO",travel:false},{at:208.7,to:208.7,dir:"SOBO",travel:false}]}
+  ]
+  ,disclaimer:"Note: the JMT requires a wilderness permit (Yosemite lottery for classic starts); Half Dome needs its own permit. Miles run 0 at Happy Isles to the Whitney summit, then descend to Whitney Portal. Choose where and when your hike starts and ends. Mile markers are planning approximations — verify in your nav app."
 };
+// ===== engine constants resolved from TRAIL config =====
+const T_LEN=TRAIL.length, T_END=TRAIL.classicEnd, T_ABBR=TRAIL.abbr;
+const T_INC=TRAIL.dirIncreasing;           // which dir increases mileage
+const T_HALF=TRAIL.halfwayMile, T_HIGH=TRAIL.highMile, T_HIGHNM=TRAIL.highName;
+const T_CSTEP=TRAIL.centuryStep, T_CMIN=TRAIL.centuryMin, T_CMAX=TRAIL.centuryMax;
+const T_TERMHI=TRAIL.terminusHiEnd, T_SEAM=TRAIL.seam;
+const T_KEY=TRAIL.id+"_full_v1", T_SNAP=TRAIL.id+"_full_snaps";
 const WPTS=[[0,"Happy Isles Trailhead (Yosemite Valley)","TR"],[3.5,"Little Yosemite Valley",""],[4.8,"Half Dome Junction",""],[12.8,"Sunrise / Long Meadow",""],[17.4,"Cathedral Pass","P"],[22.9,"Tuolumne Meadows","TR"],[35.4,"Donohue Pass","P"],[42.3,"Thousand Island Lake",""],[56.6,"Devils Postpile jct",""],[58.2,"Reds Meadow / Mammoth","TR"],[76.1,"Silver Pass","P"],[85.7,"VVR jct (Lake Edison — ferry uncertain)","R"],[94.4,"Selden Pass","P"],[104.1,"Muir Trail Ranch","R"],[127.3,"Muir Pass","P"],[138.4,"Golden Staircase",""],[147.9,"Mather Pass","P"],[159.0,"Pinchot Pass","P"],[167.0,"Rae Lakes",""],[171.2,"Glen Pass","P"],[176.0,"Kearsarge Pass jct (Independence)","TR"],[187.6,"Forester Pass","P"],[200.5,"Crabtree Meadow / ranger",""],[204.4,"Guitar Lake",""],[208.7,"Mt. Whitney summit","M"],[210.4,"Trail Crest",""],[219.2,"Whitney Portal","TR"],[219.3,"JMT/PCT split (Cottonwood corridor)",""],[233.1,"Chicken Spring Lake",""],[234.0,"Cottonwood Pass","P"],[237.9,"Horseshoe Meadow Trailhead","TR"]];
 const TRAILHEADS=WPTS.filter(w=>w[2].includes("T"));
 const SEGS=[[0,"Happy Isles / Nevada Fall climb","Huge granite staircase out of the Valley; crowds thin above Nevada Fall"],[3.5,"Little Yosemite Valley","First legal camp; bear boxes"],[4.8,"Half Dome jct / Sunrise Creek","Half Dome cables need their own permit"],[12.2,"Sunrise / Long Meadow",""],[16.3,"Cathedral Pass / Cathedral Lakes","Cathedral Peak views; busy day-hike zone"],[22.9,"Tuolumne Meadows","Seasonal store & grill — last easy resupply until Reds"],[24.8,"Lyell Canyon","Flat and lovely; July mosquitoes are serious"],[31.9,"Donohue climb","Leave Yosemite at the pass"],[36.4,"Rush Creek / Island Pass",""],[40.5,"Thousand Island / Garnet","Banner and Ritter postcard country"],[46.1,"Shadow Lake / Rosalie",""],[53.8,"Devils Postpile approach","Columnar basalt worth the short spur"],[58.2,"Reds Meadow","Store, café, Mammoth shuttle"],[62.1,"Crater Meadow / Deer Creek",""],[68.8,"Purple Lake / Lake Virginia",""],[73.7,"Tully Hole / Silver Pass climb",""],[77.5,"Mono Creek / VVR country","VVR resupply: ferry service is not guaranteed (low water / operator gaps in recent years) — confirm before relying on it, or hike the ~5 mi Mono Creek trail in/out"],[87.2,"Bear Ridge / Bear Creek","Fords early season"],[92.0,"Sallie Keyes / Selden Pass",""],[100.7,"Senger Creek descent",""],[104.1,"Muir Trail Ranch / San Joaquin","Last bucket resupply on the route"],[107.5,"Evolution Valley","Evolution Creek ford — serious in early season"],[114.3,"Evolution Basin","Arguably the finest miles of the JMT"],[123.0,"Muir Pass approach","Long rocky basin; Muir Hut on top"],[128.9,"LeConte Canyon","Big descent past the Monster Rock"],[137.3,"Golden Staircase / Palisade Lakes","Steepest sustained climb on the JMT"],[144.8,"Upper Basin / Mather Pass",""],[151.1,"South Fork Kings / Lake Marjorie",""],[156.4,"Pinchot Pass",""],[161.7,"Woods Creek suspension bridge","One at a time on the bouncy bridge"],[165.9,"Rae Lakes","Painted Lady; strict one-night camping limits"],[170.1,"Glen Pass","Snow lingers on the north side"],[174.4,"Charlotte Lake / Kearsarge jct","Exit over Kearsarge Pass to Onion Valley / Independence"],[179.7,"Vidette Meadow / Bubbs Creek",""],[185.0,"Forester approach",""],[187.6,"Forester Pass","13,120 ft — highest pass on the route"],[191.5,"Bighorn Plateau / Tyndall Creek",""],[198.2,"Wallace / Crabtree","Ranger station; wag bags issued here"],[204.4,"Guitar Lake","Classic summit-eve camp"],[206.3,"Whitney switchbacks","Trail Crest — most drop packs for the summit spur"],[208.7,"Mt. Whitney summit","14,505 ft — top of the lower 48"],[210.4,"Trail Crest / 99 switchbacks","Long, hot descent"],[214.4,"Trail Camp / Outpost Camp",""],[219.2,"Whitney Portal","Burgers at the Portal Store; exit"],[219.3,"Cottonwood corridor / Sandy Meadow","Alternate exit: PCT south from the JMT split"],[226,"Guyot Flat / Siberian Outpost","Dry, sandy plateau country"],[232,"Chicken Spring Lake","Last reliable water before the pass"],[234.0,"Cottonwood Pass descent","Switchbacks down to Horseshoe Meadow"]];
@@ -330,7 +347,7 @@ const QUEST_CATALOG=[
  {name:"Devils Postpile / Rainbow Falls spur",at:57,mi:3,gain:400}];
 
 // ---------------- storage ----------------
-const KEY="jmt_full_v1";
+const KEY=T_KEY;
 let memStore=null;
 function loadState(){
   try{const raw=localStorage.getItem(KEY); if(raw) return JSON.parse(raw);}catch(e){}
@@ -340,7 +357,7 @@ function defaultState(){
   const t=new Date();
   const iso=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
   return {actuals:{},planned:{},pace:"",routeChanges:[],questSel:{},customQuests:[],
-    settings:{dir:"NOBO",start:0,end:219.2,date:iso,colors:true,logMode:"mi",gps:"off",gpsMode:"manual",legsOn:false,questsOn:false}};
+    settings:{dir:"NOBO",start:0,end:T_END,date:iso,colors:true,logMode:"mi",gps:"off",gpsMode:"manual",legsOn:false,questsOn:false}};
 }
 function saveState(s){
   memStore=s;
@@ -350,8 +367,8 @@ function saveState(s){
 let saveT=null, state=loadState();
 function normalize(st){
 if(!st.settings) st.settings=defaultState().settings;
-if(st.settings.end===2658.9) st.settings.end=237.9;
-if(st.settings.start===2658.9) st.settings.start=237.9;
+if(st.settings.end===2658.9) st.settings.end=T_LEN;
+if(st.settings.start===2658.9) st.settings.start=T_LEN;
 if(st.settings.colors===undefined) st.settings.colors=true;
 if(!st.settings.logMode) st.settings.logMode="mi";
 if(!st.settings.gps) st.settings.gps="off";
@@ -492,7 +509,7 @@ function maybeAutoLocate(){
 }
 
 // ---------------- backup & snapshots ----------------
-const SNAPKEY="jmt_full_snaps";
+const SNAPKEY=T_SNAP;
 function readSnaps(){try{const r=localStorage.getItem(SNAPKEY);return r?JSON.parse(r):[];}catch(e){return [];}}
 function writeSnaps(a){try{localStorage.setItem(SNAPKEY,JSON.stringify(a));}catch(e){}}
 function snapshotNow(label){
@@ -595,7 +612,7 @@ function buildLegs(){
   rcs.forEach((rc,i)=>{
     const at=num(rc.at), to=num(rc.to);
     if(at===null||to===null){issues.push("Change "+(i+1)+": incomplete");return;}
-    if(at<0||at>237.9||to<0||to>237.9){issues.push("Change "+(i+1)+": mile outside the trail (0–237.9)");return;}
+    if(at<0||at>T_LEN||to<0||to>T_LEN){issues.push("Change "+(i+1)+": mile outside the trail (0–"+T_LEN+")");return;}
     if((at-from)*sign<=1e-9){issues.push("Change "+(i+1)+": mi "+at+" not ahead on current leg");return;}
     legs.push({from,to:at,sign,travelAfter:rc.travel!==false});
     from=to; sign=rc.dir==="SOBO"?-1:1;
@@ -658,8 +675,8 @@ function compute(){
   const planC=newCursor(legs), projC=newCursor(legs);
   const rows=[]; let day=0; let finishETA=null;
   const stoneMap={};
-  const MAIN_END=219.2, CW_ATTACH=200.5;
-  const mapEnd=e=>e>MAIN_END+1e-6?CW_ATTACH:e;
+  const MAIN_END=T_SEAM?T_SEAM.mainEnd:1e9, CW_ATTACH=T_SEAM?T_SEAM.attach:0;
+  const mapEnd=e=>(T_SEAM&&e>MAIN_END+1e-6)?CW_ATTACH:e;
   const rawMin=Math.min(...legs.map(l=>Math.min(l.from,l.to)));
   const rawMax=Math.max(...legs.map(l=>Math.max(l.from,l.to)));
   const envMin=Math.min(...legs.map(l=>Math.min(mapEnd(l.from),mapEnd(l.to))));
@@ -776,10 +793,10 @@ function crossSeg(segs){
   for(const g of segs){
     if(g.quest) continue;
     const lo=Math.min(g.a,g.b),hi=Math.max(g.a,g.b);
-    for(let k=Math.ceil((lo+1e-9)/50)*50;k<=hi+1e-9;k+=50){ if(k>=50&&k<=200) cent.push(k); }
-    if(lo<104.4&&104.4<=hi+1e-9) half=true;
-    if(lo<=208.7+1e-9&&208.7<=hi+1e-9) high=true;
-    if(lo<=1e-6) term=true;
+    for(let k=Math.ceil((lo+1e-9)/T_CSTEP)*T_CSTEP;k<=hi+1e-9;k+=T_CSTEP){ if(k>=T_CMIN&&k<=T_CMAX) cent.push(k); }
+    if(lo<T_HALF&&T_HALF<=hi+1e-9) half=true;
+    if(lo<=T_HIGH+1e-9&&T_HIGH<=hi+1e-9) high=true;
+    if(lo<=1e-6||(T_TERMHI&&hi>=T_LEN-1e-6)) term=true;
   }
   return {cent:[...new Set(cent)],half,term,high};
 }
@@ -793,7 +810,7 @@ function viewDay(r,view,m){
     return out;
   }
   let up=0,down=0,miles=0,questMi=0,questName="";
-  const passes=[],bigPasses=[];
+  const passes=[],bigPasses=[],shelters=[];
   for(const g of v.segs){
     miles+=g.mi;
     if(g.quest){
@@ -810,9 +827,10 @@ function viewDay(r,view,m){
     for(const w of WPTS){
       if(w[2].includes("R")&&w[0]>lo+1e-9&&w[0]<=hi+1e-9) passes.push(w[1]);
       if(w[2].includes("P")&&w[0]>lo+1e-9&&w[0]<=hi+1e-9) bigPasses.push(w[1]+" ("+Math.round(elePeakAtMile(w[0])).toLocaleString()+" ft)");
+      if(w[2].includes("S")&&w[0]>lo+1e-9&&w[0]<=hi+1e-9) shelters.push({mi:w[0],name:w[1]});
     }
   }
-  out.gl={up:Math.round(up),down:Math.round(down)}; out.passes=passes; out.bigPasses=bigPasses; out.miles=miles;
+  out.gl={up:Math.round(up),down:Math.round(down)}; out.passes=passes; out.bigPasses=bigPasses; out.shelters=shelters; out.miles=miles;
   out.x=crossSeg(v.segs); out.questName=questName;
   const endPos=v.pos;
   if(questMi>0&&questMi>=miles-1e-6){ out.loc=questName+" (side quest)"; out.rel=""; out.note=""; }
@@ -833,8 +851,8 @@ function viewDay(r,view,m){
 function mkBadges(x,q){
   let h="";
   for(const k of x.cent) h+='<span class="mk">MILE '+k.toLocaleString()+'</span>';
-  if(x.half) h+='<span class="mk gold">⭐ JMT HALFWAY</span>';
-  if(x.high) h+='<span class="mk gold">▲ WHITNEY — HIGH POINT</span>';
+  if(x.half) h+='<span class="mk gold">⭐ '+T_ABBR+' HALFWAY</span>';
+  if(x.high) h+='<span class="mk gold">▲ '+T_HIGHNM+'</span>';
   if(x.term) h+='<span class="mk gold">🏁 TERMINUS</span>';
   if(q) h+='<span class="mk quest">⚔ SIDE QUEST</span>';
   return h;
@@ -852,7 +870,7 @@ function cardTint(x,hasResupply,warnNote,travel,quest){
 
 // ---------------- renders ----------------
 function renderHeader(m){
-  document.getElementById("tripLine").textContent="JMT "+(m.legs[0].sign>0?"SOBO":"NOBO")+(m.legs.length>1?" · "+m.legs.length+" LEGS":"")+" · "+wname(m.st.start).split("—")[0].split("/")[0].trim()+" → "+wname(m.st.end).split("—")[0].split("/")[0].trim();
+  document.getElementById("tripLine").textContent=T_ABBR+" "+(m.legs[0].sign>0?(T_INC==="SOBO"?"SOBO":"NOBO"):(T_INC==="SOBO"?"NOBO":"SOBO"))+(m.legs.length>1?" · "+m.legs.length+" LEGS":"")+" · "+wname(m.st.start).split("—")[0].split("/")[0].trim()+" → "+wname(m.st.end).split("—")[0].split("/")[0].trim();
   document.getElementById("curMile").textContent=fmtMi(m.cur.pos);
   const v=m.cur.variance, chip=document.getElementById("varChip");
   chip.textContent=m.lastEntered===0?"no days logged yet":Math.abs(v)<0.05?"on plan":fmtMi(Math.abs(v))+" mi "+(v>0?"ahead":"behind");
@@ -916,6 +934,11 @@ function renderLog(m){
     if(r.keyPt) bits.push('<b>★ '+esc(r.keyPt)+'</b>');
     if(r.campWarn) bits.push('<b style="color:var(--blaze)">⛔ '+esc(r.campWarn)+'</b>');
     if(vd.passes.length) bits.push('<b style="color:var(--trail)">🛒 Resupply: '+esc(vd.passes.join(" · "))+'</b>');
+    if(vd.shelters&&vd.shelters.length){
+      const end=vd.shelters[vd.shelters.length-1];
+      const extra=vd.shelters.length>1?' (+'+(vd.shelters.length-1)+' more today)':'';
+      bits.push('<b style="color:var(--teal,#4aa9ad)">🏠 '+esc(end.name)+' — mi '+fmtMi(end.mi)+extra+'</b>');
+    }
     const note=bits.length?'<div class="note">'+bits.join(" — ")+'</div>':"";
     html+='<div class="card'+(r.d===tDay?' today':'')+cardTint(vd.x,vd.passes.length>0,vd.note,false,!!vd.questName)+'" data-day="'+r.d+'" data-dview="proj"><div class="rowtop">'
       +'<div class="daycol"><div class="daynum">DAY '+r.d+'</div><div class="daydate">'+fmtDate(r.date)+(r.d===tDay?' · TODAY':'')+'</div></div>'
@@ -969,6 +992,16 @@ function renderSetup(m){
   const st=state.settings;
   const T=(id,on)=>{const e=document.getElementById(id);if(e)e.classList.toggle("on",on);};
   T("dirNOBO",st.dir==="NOBO");T("dirSOBO",st.dir==="SOBO");
+  (function(){
+    // label direction buttons with the trail's own terminals (generic across trails)
+    const terms=WPTS.filter(w=>w[2].includes("TR"));
+    const first=terms.length?terms[0][1]:"", last=terms.length?terms[terms.length-1][1]:"";
+    const shortName=s=>s.replace(/\s*[—(].*$/,"").replace(/,.*$/,"").trim();
+    const a=shortName(first), b=shortName(last);
+    const nb=document.getElementById("dirNOBO"), sb=document.getElementById("dirSOBO");
+    if(nb&&a&&b) nb.textContent="NOBO · "+a+" → "+b;
+    if(sb&&a&&b) sb.textContent="SOBO · "+b+" → "+a;
+  })();
   T("gpsOn",st.gps==="on");T("gpsOff",st.gps!=="on");
   T("gpsMan",st.gpsMode!=="auto");T("gpsAuto",st.gpsMode==="auto");
   T("logMi",st.logMode!=="pct");T("logPct",st.logMode==="pct");
@@ -1048,7 +1081,7 @@ function renderAll(focusInfo){
     gb.hidden=!on; gb.style.display=on?"flex":"none";
     if(on&&state.lastFix){
       const f=state.lastFix, ago=Math.round((Date.now()-f.t)/60000);
-      gpsMsg("JMT mi "+fmtMi(f.mile)+" · "+fmtMi(f.off)+" mi off trail · "+(ago<1?"just now":ago+" min ago"));
+      gpsMsg(T_ABBR+" mi "+fmtMi(f.mile)+" · "+fmtMi(f.off)+" mi off trail · "+(ago<1?"just now":ago+" min ago"));
       const lb=document.getElementById("logFixBtn"); const td=tDayOf();
       lb.style.display=(td>=1&&f.off<=3)?"block":"none";
     }
@@ -1060,7 +1093,7 @@ function renderAll(focusInfo){
       if(state.settings.gps!=="on"){ big.textContent="GPS is off"; tm.textContent="Enable GPS above to record coordinates."; }
       else if(!f||f.lat===undefined){ big.textContent="No fix yet"; tm.textContent="Tap GPS Locate to record your coordinates."; }
       else { big.textContent=f.lat.toFixed(5)+"\n"+f.lon.toFixed(5);
-        tm.textContent="JMT mi "+fmtMi(f.mile)+" · "+new Date(f.t).toLocaleString("en-US",{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}); }
+        tm.textContent=T_ABBR+" mi "+fmtMi(f.mile)+" · "+new Date(f.t).toLocaleString("en-US",{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}); }
     }
   }
   if(focusInfo){
@@ -1338,8 +1371,8 @@ function setDir(dir){
   const st=state.settings;
   if(st.dir===dir)return;
   st.dir=dir;
-  st.start=dir==="NOBO"?0:219.2;
-  st.end=dir==="NOBO"?219.2:0;
+  st.start=dir==="NOBO"?0:T_END;
+  st.end=dir==="NOBO"?T_END:0;
   persist(); renderAll();
 }
 function thWindow(){
@@ -1353,12 +1386,10 @@ function applyPreset(kind){
   if(kind==="yoyo"){
     state.routeChanges=[{at:st.end,to:st.end,dir:st.dir==="SOBO"?"NOBO":"SOBO",travel:false}];
     st.end=st.start; // walk it back to where you began
-  } else if(kind==="cwExit"){
-    state.settings.dir="NOBO"; state.settings.start=0; state.settings.end=237.9;
-    state.routeChanges=[{at:208.7,to:208.7,dir:"SOBO",travel:false},{at:200.5,to:219.3,dir:"NOBO",travel:false}];
-  } else if(kind==="cwStart"){
-    state.settings.dir="SOBO"; state.settings.start=237.9; state.settings.end=0;
-    state.routeChanges=[{at:219.3,to:200.5,dir:"NOBO",travel:false},{at:208.7,to:208.7,dir:"SOBO",travel:false}];
+  } else if((TRAIL.presets||[]).some(pr=>pr.id===kind)){
+    const pr=TRAIL.presets.find(p=>p.id===kind);
+    state.settings.dir=pr.dir; state.settings.start=pr.start; state.settings.end=pr.end;
+    state.routeChanges=pr.routeChanges.map(rc=>({...rc}));
   } else {
     const ths=thWindow();
     if(ths.length>=2){
@@ -1376,8 +1407,15 @@ const on=(id,fn)=>{const e=document.getElementById(id);if(e)e.addEventListener("
 on("pJump",()=>applyPreset("jump"));
 on("pFlip",()=>applyPreset("flip"));
 on("pYoyo",()=>applyPreset("yoyo"));
-on("pCwExit",()=>applyPreset("cwExit"));
-on("pCwStart",()=>applyPreset("cwStart"));
+// render trail-specific presets from config
+(function(){
+  const host=document.getElementById("trailPresets");
+  if(!host)return;
+  const prs=TRAIL.presets||[];
+  if(!prs.length){host.style.display="none";return;}
+  host.innerHTML=prs.map(pr=>'<button class="reset trailPreset" data-preset="'+pr.id+'" style="margin:0;flex:1;padding:9px 4px;min-width:44%">'+pr.label+'</button>').join("");
+  host.querySelectorAll(".trailPreset").forEach(b=>b.addEventListener("click",()=>applyPreset(b.dataset.preset)));
+})();
 on("dirNOBO",()=>setDir("NOBO")); on("dirSOBO",()=>setDir("SOBO"));
 on("gpsOn",()=>{state.settings.gps="on";persist();renderAll();});
 on("gpsOff",()=>{state.settings.gps="off";persist();renderAll();});
@@ -1438,6 +1476,7 @@ renderAll();
 maybeAutoLocate();
 checkVersion(true);
 const td=tDayOf(); if(td>=1){const c=document.querySelector(".card.today");if(c)setTimeout(()=>c.scrollIntoView({block:"center"}),50);}
+
 
 </script>
 </body>
